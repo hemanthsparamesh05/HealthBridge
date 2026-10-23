@@ -1,26 +1,170 @@
 @import "tailwindcss";
 
+/* Tailwind v4: make `dark:` follow the .dark class set by the theme toggle (not the OS setting). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-inter: ui-sans-serif, system-ui, sans-serif;
+  --hb-navy: #0b1f33;
+  --hb-navy-2: #12324f;
+  --hb-accent: #0d8af0;
+  --hb-accent-soft: #e0f2fe;
+  --hb-ink: #0f172a;
+  --hb-ink-muted: #64748b;
+  --hb-surface: #f4f7fb;
+  --hb-surface-2: #e8eef6;
+  --hb-card: rgba(255, 255, 255, 0.92);
+  --hb-border: rgba(148, 163, 184, 0.35);
+  --hb-success: #16a34a;
+  --hb-warning: #f97316;
+  --hb-danger: #ef4444;
+  --background: #f4f7fb;
+  --foreground: #0f172a;
+  color-scheme: light;
+}
+
+.dark {
+  --hb-navy: #020617;
+  --hb-navy-2: #0f172a;
+  --hb-accent: #38bdf8;
+  --hb-accent-soft: #082f49;
+  --hb-ink: #f1f5f9;
+  --hb-ink-muted: #94a3b8;
+  --hb-surface: #020617;
+  --hb-surface-2: #0f172a;
+  --hb-card: rgba(15, 23, 42, 0.85);
+  --hb-border: rgba(51, 65, 85, 0.65);
+  --background: #020617;
+  --foreground: #f1f5f9;
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    /* scroll-behavior handled via data-scroll-behavior attribute */
   }
 }
 
+/* Only apply transitions to specific interactive elements, not globally */
+button, a, input, select, textarea, [role="button"] {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+html,
 body {
-  background: var(--background);
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(
+      1000px 520px at 8% -8%,
+      #dbeafe 0%,
+      transparent 52%
+    ),
+    radial-gradient(800px 420px at 96% 0%, #e0f2fe 0%, transparent 48%),
+    var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+.dark body {
+  background: radial-gradient(900px 480px at 12% -10%, #0c4a6e 0%, transparent 55%),
+    radial-gradient(700px 380px at 88% 0%, #1e1b4b 0%, transparent 50%),
+    var(--background);
+}
+
+/* Ultra-smooth hover effect - GPU accelerated */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: scale(1.02);
+}
+
+/* Smooth focus transitions */
+.focus-ring {
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Eliminate transition delays for interactive elements */
+.interactive {
+  transition-duration: 150ms;
+}
+
+::selection {
+  background: #bae6fd;
+  color: #0c4a6e;
+}
+
+.dark ::selection {
+  background: #0369a1;
+  color: #f0f9ff;
+}
+
+.wm-doc::after {
+  content: "CONFIDENTIAL · HEALTHBRIDGE INDIA";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: rgba(15, 39, 68, 0.06);
+  transform: rotate(-18deg);
+  pointer-events: none;
+}
+
+.dark .wm-doc::after {
+  color: rgba(241, 245, 249, 0.05);
+}
+
+/* Recharts tooltip readability in dark mode */
+.dark .recharts-default-tooltip {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid rgba(51, 65, 85, 0.8) !important;
+  border-radius: 12px !important;
+  color: #e2e8f0 !important;
+}
+
+/* ---------- Dark theme polish ---------- */
+.dark body {
+  color: var(--hb-ink);
+}
+.dark .bg-white\/70,
+.dark .bg-white\/80,
+.dark .bg-white\/90,
+.dark .bg-white\/50 {
+  background-color: rgba(15, 23, 42, 0.72);
+}
+.dark .text-slate-700 { color: #cbd5e1; }
+.dark .text-slate-600 { color: #94a3b8; }
+.dark .border-slate-200\/60,
+.dark .border-slate-200\/70,
+.dark .border-slate-200\/80,
+.dark .border-white\/60 {
+  border-color: rgba(51, 65, 85, 0.7);
+}
+.dark .recharts-cartesian-axis-tick-value { fill: #94a3b8; }
+.dark .recharts-cartesian-grid line { stroke: rgba(51, 65, 85, 0.6); }
+.dark .recharts-legend-item-text { color: #cbd5e1 !important; }
+
+/* Form controls in dark mode */
+.dark select,
+.dark textarea,
+.dark input[type="date"] {
+  color-scheme: dark;
 }
